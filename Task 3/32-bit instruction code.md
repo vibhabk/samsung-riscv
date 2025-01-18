@@ -1,4 +1,4 @@
-1. addi sp, sp, -16
+# 1. addi sp, sp, -16
     Instruction Type: I-type
     Opcode: 0010011 (ADDI)
     Immediate: -16 = 1111111111110000 (12 bits, sign-extended)
@@ -6,15 +6,15 @@
     | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
     | 111111111000    | 00010 | 000    | 00010 | 0010011  |
 
-2. sd ra, 8(sp)
+# 2. sd ra, 8(sp)
     Instruction Type: S-type
-    Opcode: 0100011 (SD)
+    Opcode: 0100011 (SD) 
     Immediate: 8 = 00000001000 (split into imm[11:5] and imm[4:0])
     Registers: ra(rs2) = 00001, sp(rs1) = 00010
-   | imm[11:5] | rs2   | rs1   | funct3 | imm[4:0] | opcode   |
-   | 0000000   | 00001 | 00010 | 011    | 01000    | 0100011  |
+    | imm[11:5] | rs2   | rs1   | funct3 | imm[4:0] | opcode   |
+    | 0000000   | 00001 | 00010 | 011    | 01000    | 0100011  |
 
-3. addi a5, a5, 100
+# 3. addi a5, a5, 100
     Instruction Type: I-type
     Opcode: 0010011 (ADDI)
     Immediate: 100 = 000000110010
@@ -22,15 +22,15 @@
     | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
     | 000000110010    | 01010 | 000    | 01010 | 0010011  |
 
-4. bnez a5, 10190
+# 4. bnez a5, 10190
     Instruction Type: B-type
     Opcode: 1100011 (BNE)
     Immediate: 10190 (calculated relative offset, split into imm[12|10:5|4:1|11])
     Registers: a5(rs1) = 01010, x0(rs2) = 00000
-   | imm[12|10:5] | rs2   | rs1   | funct3 | imm[4:1|11] | opcode   |
-   | 0100000      | 00000 | 01010 | 001    | 100110      | 1100011  |
+    | imm[12|10:5] | rs2   | rs1   | funct3 | imm[4:1|11] | opcode   |
+    | 0100000      | 00000 | 01010 | 001    | 100110      | 1100011  |
 
-5. addi a0, zero, 1
+# 5. addi a0, zero, 1
     Instruction Type: I-type
     Opcode: 0010011 (ADDI)
     Immediate: 1 = 000000000001
@@ -38,7 +38,7 @@
     | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
     | 000000000001    | 00000 | 000    | 00100 | 0010011  |
 
-6. lui a0, 0x21
+# 6. lui a0, 0x21
     Instruction Type: U-type
     Opcode: 0110111 (LUI)
     Immediate: 0x21 (20-bit upper immediate)
@@ -46,7 +46,7 @@
     | imm[31:12]      | rd    | opcode   |
     | 000000000000001 | 00100 | 0110111  |
 
-7. jal ra, 10418
+# 7. jal ra, 10418
     Instruction Type: J-type
     Opcode: 1101111 (JAL)
     Immediate: 10418 (split into imm[20|10:1|11|19:12])
@@ -54,7 +54,7 @@
     | imm[20|10:1|11|19:12] | rd    | opcode   |
     | 001010000000000        | 00001 | 1101111  |
 
-8. ret
+# 8. ret
     Instruction Type: JALR (special case for return)
     Opcode: 1100111 (JALR)
     Immediate: 0
@@ -62,30 +62,30 @@
     | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
     | 000000000000    | 00001 | 000    | 00001 | 1100111  |
 
-9. addi a1, zero, 100:
+# 9. addi a1, zero, 100:
     Instruction Type: I-type
     Opcode: 0010011 (ADDI)
     Immediate: 100 = 000000110010
     Registers: a1(rd) = 00101, zero(rs1) = 00000
-   | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
-   | 000000110010    | 00000 | 000    | 00101 | 0010011  |
+    | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
+    | 000000110010    | 00000 | 000    | 00101 | 0010011  |
    
-10. add a0, a0, a1
+# 10. add a0, a0, a1
     Instruction Type: R-type
     Opcode: 0110011 (ADD)
     Registers: a0(rd) = 00100, a0(rs1) = 00100, a1(rs2) = 00101
     | funct7  | rs2   | rs1   | funct3 | rd    | opcode   |
     | 0000000 | 00101 | 00100 | 000    | 00100 | 0110011  |
 
-11. addi sp, sp, -16
+# 11. addi sp, sp, -16
     Instruction Type: I-type
     Opcode: 0010011 (ADDI)
     Immediate: -16 = 1111111111100000 (sign-extended to 12 bits)
     Registers: sp(rd) = 00010, sp(rs1) = 00010
-   | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
-   | 111111111000    | 00010 | 000    | 00010 | 0010011  |
+    | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
+    | 111111111000    | 00010 | 000    | 00010 | 0010011  |
 
-12. sd ra, 8(sp)
+# 12. sd ra, 8(sp)
     Instruction Type: S-type
     Opcode: 0100011 (SD)
     Immediate: 8
@@ -94,7 +94,7 @@
     | imm[11:5] | rs2   | rs1   | funct3 | imm[4:0] | opcode   |
     | 0000000   | 00001 | 00010 | 011    | 01000    | 0100011  |
 
-13. jal ra, 10148
+# 13. jal ra, 10148
     Instruction Type: J-type
     Opcode: 1101111 (JAL)
     Immediate: 10148 = 00101011010100 (split into respective J-type fields)
@@ -102,7 +102,7 @@
     | imm[20] | imm[10:1] | imm[11] | imm[19:12] | rd    | opcode   |
     | 0       | 1010110101| 0       | 01010100   | 00001 | 1101111  |
 
-14. add a0, a0, a1
+# 14. add a0, a0, a1
     Instruction Type: R-type
     Opcode: 0110011 (ADD)
     Funct3: 000 (for ADD)
@@ -111,12 +111,12 @@
     | funct7   | rs2   | rs1   | funct3 | rd    | opcode   |
     | 0000000  | 00101 | 00100 | 000    | 00100 | 0110011  |
 
-15. lui a0, 0x21
+# 15. lui a0, 0x21
     Instruction Type: U-type
     Opcode: 0110111 (LUI)
     Immediate: 0x21 = 0000000000100001 (upper 20 bits for 0x21 << 12)
     Register: a0(rd) = 00100
-   | imm[31:12]            | rd    | opcode   |
-   | 0000000000100001      | 00100 | 0110111  |
+    | imm[31:12]            | rd    | opcode   |
+    | 0000000000100001      | 00100 | 0110111  |
     
    
