@@ -1,4 +1,4 @@
-addi sp, sp, -16
+1. addi sp, sp, -16
     Instruction Type: I-type
     Opcode: 0010011 (ADDI)
     Immediate: -16 = 1111111111110000 (12 bits, sign-extended)
