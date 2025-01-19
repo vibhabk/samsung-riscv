@@ -77,46 +77,6 @@
     | funct7  | rs2   | rs1   | funct3 | rd    | opcode   |
     | 0000000 | 00101 | 00100 | 000    | 00100 | 0110011  |
 
-# 11. addi sp, sp, -16
-    Instruction Type: I-type
-    Opcode: 0010011 (ADDI)
-    Immediate: -16 = 1111111111100000 (sign-extended to 12 bits)
-    Registers: sp(rd) = 00010, sp(rs1) = 00010
-    | imm[11:0]       | rs1   | funct3 | rd    | opcode   |
-    | 111111111000    | 00010 | 000    | 00010 | 0010011  |
 
-# 12. sd ra, 8(sp)
-    Instruction Type: S-type
-    Opcode: 0100011 (SD)
-    Immediate: 8
-    Split into imm[11:5] = 0000000 and imm[4:0] = 01000
-    Registers: ra(rs2) = 00001, sp(rs1) = 00010
-    | imm[11:5] | rs2   | rs1   | funct3 | imm[4:0] | opcode   |
-    | 0000000   | 00001 | 00010 | 011    | 01000    | 0100011  |
-
-# 13. jal ra, 10148
-    Instruction Type: J-type
-    Opcode: 1101111 (JAL)
-    Immediate: 10148 = 00101011010100 (split into respective J-type fields)
-    Register: ra(rd) = 00001
-    | imm[20] | imm[10:1] | imm[11] | imm[19:12] | rd    | opcode   |
-    | 0       | 1010110101| 0       | 01010100   | 00001 | 1101111  |
-
-# 14. add a0, a0, a1
-    Instruction Type: R-type
-    Opcode: 0110011 (ADD)
-    Funct3: 000 (for ADD)
-    Funct7: 0000000
-    Registers: a0(rd) = 00100, a0(rs1) = 00100, a1(rs2) = 00101
-    | funct7   | rs2   | rs1   | funct3 | rd    | opcode   |
-    | 0000000  | 00101 | 00100 | 000    | 00100 | 0110011  |
-
-# 15. lui a0, 0x21
-    Instruction Type: U-type
-    Opcode: 0110111 (LUI)
-    Immediate: 0x21 = 0000000000100001 (upper 20 bits for 0x21 << 12)
-    Register: a0(rd) = 00100
-    | imm[31:12]            | rd    | opcode   |
-    | 0000000000100001      | 00100 | 0110111  |
     
    
