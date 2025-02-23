@@ -1,0 +1,135 @@
+#include <ch32v00x.h>
+#include <debug.h>
+
+#define TRIG_PIN GPIO_Pin_3  // TRIG -> PD3
+#define ECHO_PIN GPIO_Pin_4  // ECHO -> PD4
+#define SERVO_PIN GPIO_Pin_2 // Servo PWM -> PD2
+#define LED_PIN GPIO_Pin_5   // LED -> PD5
+
+void Delay_us(uint32_t us);
+void GPIO_Config(void);
+uint32_t Measure_Distance(void);
+void TIM1_PWMOut_Init(uint16_t arr, uint16_t psc, uint16_t ccp);
+
+void GPIO_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure = {0};
+
+    // Enable clock for GPIOD
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+
+    // Configure TRIG as Output
+    GPIO_InitStructure.GPIO_Pin = TRIG_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+    // Configure ECHO as Input
+    GPIO_InitStructure.GPIO_Pin = ECHO_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+    // Configure SERVO as PWM output
+    GPIO_InitStructure.GPIO_Pin = SERVO_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+    // Configure LED as Output (Initially OFF)
+    GPIO_InitStructure.GPIO_Pin = LED_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+    GPIO_WriteBit(GPIOD, LED_PIN, RESET); // LED OFF initially
+}
+
+// Function to measure distance from ultrasonic sensor
+uint32_t Measure_Distance(void)
+{
+    uint32_t time, distance;
+
+    // Send 10us pulse to TRIG
+    GPIO_WriteBit(GPIOD, TRIG_PIN, SET);
+    Delay_us(10);
+    GPIO_WriteBit(GPIOD, TRIG_PIN, RESET);
+
+    // Wait for ECHO signal
+    while (GPIO_ReadInputDataBit(GPIOD, ECHO_PIN) == 0);
+    time = 0;
+
+    // Measure the ECHO pulse duration
+    while (GPIO_ReadInputDataBit(GPIOD, ECHO_PIN) == 1)
+    {
+        time++;
+        Delay_us(1);
+    }
+
+    // Convert time to distance (in cm)
+    distance = (time * 0.0343) / 2;
+
+    return distance;
+}
+
+// Initialize PWM for servo control
+void TIM1_PWMOut_Init(uint16_t arr, uint16_t psc, uint16_t ccp)
+{
+    TIM_OCInitTypeDef TIM_OCInitStructure = {0};
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure = {0};
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+
+    TIM_TimeBaseInitStructure.TIM_Period = arr;
+    TIM_TimeBaseInitStructure.TIM_Prescaler = psc;
+    TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+    TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseInit(TIM1, &TIM_TimeBaseInitStructure);
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+    TIM_OCInitStructure.TIM_Pulse = ccp;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+
+    TIM_CtrlPWMOutputs(TIM1, ENABLE);
+    TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Disable);
+    TIM_ARRPreloadConfig(TIM1, ENABLE);
+    TIM_Cmd(TIM1, ENABLE);
+}
+
+int main(void)
+{
+    uint32_t distance;
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    SystemCoreClockUpdate();
+    Delay_Init();
+    GPIO_Config();
+
+    while (1)
+    {
+        distance = Measure_Distance();
+        
+        if (distance < 10) // If object detected within 10 cm
+        {
+            TIM1_PWMOut_Init(100, 480 - 1, 25); // Rotate servo to open door
+            GPIO_WriteBit(GPIOD, LED_PIN, SET); // LED ON
+        }
+        else
+        {
+            TIM1_PWMOut_Init(100, 480 - 1, 75); // Rotate servo to close door
+            GPIO_WriteBit(GPIOD, LED_PIN, RESET); // LED OFF
+        }
+
+        Delay_Ms(100);
+    }
+}
+
+void Delay_us(uint32_t us)
+{
+    while (us--)
+    {
+        for (volatile int i = 0; i < 8; i++);
+    }
+}
+
+void NMI_Handler(void) {}
+void HardFault_Handler(void) { while (1) {} }
