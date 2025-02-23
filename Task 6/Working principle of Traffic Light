@@ -1,0 +1,3 @@
+The traffic light system using a CH32V003X operates by controlling Red, Yellow, and Green and default LEDs based on button inputs.
+Three buttons manually activate individual lights, while a fourth button switches to an automatic cycle mode for emergency vehicle passage. 
+The system ensures efficient traffic flow and emergency response management.
