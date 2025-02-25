@@ -1,4 +1,0 @@
-A smart door uses an ultrasonic sensor to detect nearby objects. 
-When an object is within 10 cm, the sensor triggers a servo motor to rotate, opening the door.
-Simultaneously, an LED lights up as an indicator.
-If no object is detected, the door closes automatically.
