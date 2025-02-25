@@ -1,4 +1,0 @@
-A Automatic Bookshelf  Drawer uses an ultrasonic sensor to detect the person. 
-When an person is within 10 cm, the sensor triggers a servo motor to rotate, opening the Drawer.
-Simultaneously, the LED inside the drawer turns ON, providing illumination for easy book searching.
-When the person moves away, the light turns off, and the drawer closes automatically.
